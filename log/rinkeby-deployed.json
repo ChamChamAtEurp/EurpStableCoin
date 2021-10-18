@@ -1,0 +1,44 @@
+{
+  "SafeMath": {
+    "address": "0x7CE2B6f666C375C0544a75bdC83858AB7ebd7bBE"
+  },
+  "SafeDecimalMath": {
+    "address": "0x398631579b465D18197cd8Fb4CaDbA916324510B"
+  },
+  "Address": {
+    "address": "0x867d1A8eBEA8D0136e521CDbe6560a9E9a1e5e37"
+  },
+  "AddressBookLib": {
+    "address": "0x982A418696Cd8Cb932e472F6F4F55A8d161B3261"
+  },
+  "AddressBook": {
+    "address": "0x18BE0De123A1307Af6751f4Fc1dADc30338f614c"
+  },
+  "Chick": {
+    "address": "0xCDbf03eeb2655ea4c2BD7b921aB95D3F9576284b"
+  },
+  "GovernToken": {
+    "address": "0x309d0b3EEA74e725556DE3EC767451F70710F7Fe"
+  },
+  "VaultToken": {
+    "address": "0x0A86f9a4f5a778421c532b1F74B9CC9535ab9897"
+  },
+  "ChainlinkEurEthPriceFeed": {
+    "address": "0x4Ba79eD6aa4d2B10C8413FAA12B3403b70A99757"
+  },
+  "ChickPriceFeed": {
+    "address": "0xECd0A1Cf950aF13792B6B32dE897D5b98605f036"
+  },
+  "EthVault": {
+    "address": "0x56149F41e848599784F88313F23DeDa4D1b0BBB3"
+  },
+  "InterestManager": {
+    "address": "0xFD89ae25a9be1883BE5FcF6B71C38FcDA69b70eA"
+  },
+  "GTokenRewardManager": {
+    "address": "0x839b42F82cbC31fF9c2d53F41b85F3f0FAD5A6bC"
+  },
+  "UniswapLiquidationManager": {
+    "address": "0x90d865B8d390946647Fe953D6639376c0EF00dF2"
+  }
+}
