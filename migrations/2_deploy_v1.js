@@ -49,6 +49,7 @@ let BigNumber = require('bignumber.js/bignumber')
 
 const SubsidyHalvingInterval = (3600 * 24 * 365) / 15;
 const InitialTokenPerBlock = 5 * 1e18; // 
+const InitReward = 3;
 
 var caps;
 var subsides;
@@ -69,8 +70,6 @@ function init() {
   }
 }
  
-const owner = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
-const new_admin = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
 
 
 module.exports = function (deployer, network, accounts) {
@@ -85,6 +84,19 @@ module.exports = function (deployer, network, accounts) {
 
     let block = await web3.eth.getBlock("latest");
     console.log("deploy start, current block: " + block.number);
+
+    let owner;
+    let new_admin;
+    if( network == "rinkeby"){
+      owner = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
+      new_admin = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
+    }else if( network == "mainnet"){
+      owner = '0xf83f3CAC7467B560Ac61c64aa7b0521EcDeDa2b8';
+      new_admin = '0x5710b80b81f1713B677e9632b9f2BA67d762B2d8';
+    }
+    console.log("owner: " + owner );
+    console.log("new_admin: " + new_admin );
+
   
 
     await DeployIfNotExist(deployer, SafeMath);
@@ -112,7 +124,7 @@ module.exports = function (deployer, network, accounts) {
     console.log("--------------- deploy Chick -------------");
 
     // chick
-    const chick = await DeployIfNotExist(deployer, Chick, "EURPlus Stable Coin", "EURP");
+    const chick = await DeployIfNotExist(deployer, Chick, "EURP Stable Coin", "EURP");
     if( await addressBook.getAddress( AddressBook.Name.CHICK) != chick.address ){
       console.log("set chick address");
       await addressBook.setAddress(AddressBook.Name.CHICK, chick.address);
@@ -124,7 +136,7 @@ module.exports = function (deployer, network, accounts) {
     block = await web3.eth.getBlock("latest");
     //console.log(block.number);
     let cur_block = block.number;//await time.latestBlock();
-    const gtoken = await DeployIfNotExist(deployer, GovernToken, "supreme", "SUP", cur_block, caps, subsides);
+    const gtoken = await DeployIfNotExist(deployer, GovernToken, "supreme token", "SUP", cur_block, caps, subsides);
     if( await addressBook.getAddress( AddressBook.Name.GOVERN_TOKEN)  != gtoken.address ){
       console.log("set gtoken address");
       await addressBook.setAddress(AddressBook.Name.GOVERN_TOKEN, gtoken.address);
@@ -146,9 +158,16 @@ module.exports = function (deployer, network, accounts) {
       ethPriceFeed = await DeployIfNotExist(deployer, EthPriceFeed, admin);    
       await ethPriceFeed.setRoundData(0, toUnit(2500), 0, 0, 0);
     } else {
-      // eth/usd,  eur/usd
-      ethPriceFeed = await DeployIfNotExist(deployer, ChainlinkFeed, "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e", "0x78F9e60608bF48a1155b4B2A5e31F32318a1d85F" );    
+      if( network == "rinkeby" ){
+        // eth/usd,  eur/usd
+        ethPriceFeed = await DeployIfNotExist(deployer, ChainlinkFeed, "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e", "0x78F9e60608bF48a1155b4B2A5e31F32318a1d85F" );    
+      }
+      if( network == "mainnet"){
+        // eth/usd,  eur/usd
+        ethPriceFeed = await DeployIfNotExist(deployer, ChainlinkFeed, "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419", "0xb49f677943BC038e9857d61E7d053CaA2C1734C1" );    
+      }
     }
+
     if( await addressBook.getAddress( AddressBook.Name.ETH_PRICE_FEED) != ethPriceFeed.address ){
       console.log("set ethPrice address");
 
@@ -193,7 +212,7 @@ module.exports = function (deployer, network, accounts) {
 
     // reward
     cur_block = (await web3.eth.getBlock("latest")).number;
-    const rewardMgr = await DeployIfNotExist(deployer, RewardMgr, addressBook.address, 10000, cur_block );
+    const rewardMgr = await DeployIfNotExist(deployer, RewardMgr, addressBook.address, toUnit(InitReward), cur_block );
     if( await addressBook.getAddress( AddressBook.Name.REWARD_MGR ) != rewardMgr.address ){
       console.log("set rewarder address");
 
@@ -233,11 +252,11 @@ module.exports = function (deployer, network, accounts) {
     // grant role
     console.log("--------------- grant chick  -------------");
     if( await chick.hasRole( await chick.MINTER_ROLE(), vault.address) == false ){
-      console.log("grant mint role:"+ await chick.MINTER_ROLE().toString + ": " + vault.address.toString());
+      console.log("grant mint role:"+ await chick.MINTER_ROLE().toString() + ": " + vault.address.toString());
       await chick.grantRole(await chick.MINTER_ROLE(), vault.address);
     }
     if( await chick.hasRole( await chick.BURNER_ROLE(), vault.address) == false ){
-      console.log("grant burn role:"+ await chick.BURNER_ROLE().toString + ": " + vault.address.toString());
+      console.log("grant burn role:"+ await chick.BURNER_ROLE().toString() + ": " + vault.address.toString());
 
       await chick.grantRole(await chick.BURNER_ROLE(), vault.address);
     }
@@ -245,29 +264,29 @@ module.exports = function (deployer, network, accounts) {
 
     console.log("--------------- grant vault token  -------------");
     if( await vtoken.hasRole( await vtoken.MINTER_ROLE(), vault.address) == false ){
-      console.log("grant mint role:"+ await vtoken.MINTER_ROLE().toString + ": " + vault.address.toString());
+      console.log("grant mint role:"+ await vtoken.MINTER_ROLE().toString() + ": " + vault.address.toString());
     
       await vtoken.grantRole(await vtoken.MINTER_ROLE(), vault.address);
     }
     if( await vtoken.hasRole( await vtoken.BURNER_ROLE(), vault.address) == false ){
-      console.log("grant burn role:"+ await vtoken.BURNER_ROLE().toString + ": " + vault.address.toString());
+      console.log("grant burn role:"+ await vtoken.BURNER_ROLE().toString() + ": " + vault.address.toString());
 
       await vtoken.grantRole(await vtoken.BURNER_ROLE(), vault.address);
     }
 
     console.log("--------------- grant goven token  -------------");
     if( await gtoken.hasRole( await gtoken.MINTER_ROLE(), rewardMgr.address ) == false ){
-      console.log("grant mint role:"+ await gtoken.MINTER_ROLE().toString + ": " + rewardMgr.address.toString());
+      console.log("grant mint role:"+ await gtoken.MINTER_ROLE().toString() + ": " + rewardMgr.address.toString());
 
       await gtoken.grantRole(await gtoken.MINTER_ROLE(), rewardMgr.address);
     }
-
 
     // transfer admin
     
     console.log("--------------- transfer admin  -------------");
     const DEFAULT_ADMIN_ROLE = await chick.DEFAULT_ADMIN_ROLE();
     const ADMIN_ROLE = await vault.ADMIN_ROLE();
+
    
     console.log("--------------- address book  -------------");
     if( await addressBook.owner() != owner ){
@@ -280,10 +299,10 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant chick default admin role");
 
       await chick.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await chick.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove chick default admin role from deployer");
-        await chick.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+    }
+    if( await chick.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove chick default admin role from deployer");
+      await chick.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
 
@@ -292,11 +311,11 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant gtoken default admin role");
 
       await gtoken.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await gtoken.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove gtoken default admin role from deployer");
+    }
+    if( await gtoken.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove gtoken default admin role from deployer");
 
-        await gtoken.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+      await gtoken.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
     console.log("--------------- vtoken  -------------");
@@ -305,11 +324,11 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant vtoken default admin role");
 
       await vtoken.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await vtoken.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove vtoken default admin role from deployer");
+    }
+    if( await vtoken.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove vtoken default admin role from deployer");
 
-        await vtoken.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+      await vtoken.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
 
@@ -326,7 +345,6 @@ module.exports = function (deployer, network, accounts) {
 
       await chickPriceFeed.transferOwnership( owner );
     }
-
     console.log("--------------- vault  -------------");
     if( await vault.hasRole( ADMIN_ROLE, new_admin ) == false ){
       console.log("grant vault admin role to new admin");
@@ -338,11 +356,11 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant default admin role");
 
       await vault.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await vault.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove default admin role from deployer");
+    }
+    if( await vault.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove default admin role from deployer");
 
-        await vault.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+      await vault.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
     console.log("--------------- interest  -------------");
@@ -356,12 +374,13 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant default admin role");
 
       await interestMgr.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await interestMgr.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove default admin role from deployer");
-
-        await interestMgr.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
     }
+    if( await interestMgr.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove default admin role from deployer");
+
+      await interestMgr.revokeRole( DEFAULT_ADMIN_ROLE, admin );
+    }
+
 
     console.log("--------------- reward  -------------");
     if( await rewardMgr.hasRole( ADMIN_ROLE, new_admin ) == false ){
@@ -374,11 +393,11 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant default admin role");
 
       await rewardMgr.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await rewardMgr.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove default admin role from deployer");
+    }
+    if( await rewardMgr.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove default admin role from deployer");
 
-        await rewardMgr.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+      await rewardMgr.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
 
@@ -387,14 +406,13 @@ module.exports = function (deployer, network, accounts) {
       console.log("grant default admin role");
 
       await liquidator.grantRole( DEFAULT_ADMIN_ROLE, owner );
-      if( await liquidator.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
-        console.log("remove default admin role from deployer");
+    }
+    if( await liquidator.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
+      console.log("remove default admin role from deployer");
 
-        await liquidator.revokeRole( DEFAULT_ADMIN_ROLE, admin );
-      }
+      await liquidator.revokeRole( DEFAULT_ADMIN_ROLE, admin );
     }
 
- 
     console.log("--------------- done  -------------");
 
   });
