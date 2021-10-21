@@ -40,5 +40,8 @@
   },
   "UniswapLiquidationManager": {
     "address": "0x90d865B8d390946647Fe953D6639376c0EF00dF2"
+  },
+  "UniswapLiquidatorV2": {
+    "address": "0x5c1F9CfE82ab397F0Cb7650f51B25baFbe9c6176"
   }
 }
