@@ -59,7 +59,7 @@ module.exports = {
      },
      mainnet:{
       provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/`+ api_key ),
-      network_id: "*",       // Ropsten's id
+      network_id: "1",       // Ropsten's id
       gasPrice: 120000000000, // 50 GWei
       confirmations: 0,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
@@ -111,7 +111,12 @@ module.exports = {
   mocha: {
     // timeout: 100000
   },
-
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
+  },
   // Configure your compilers
   compilers: {
     solc: {

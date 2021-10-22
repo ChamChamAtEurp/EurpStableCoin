@@ -3,4 +3,5 @@ bin/
 node_modules
 com
 build/
+build-rinkeby/
 log/
