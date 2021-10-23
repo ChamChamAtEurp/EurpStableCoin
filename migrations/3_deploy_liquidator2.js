@@ -93,6 +93,9 @@ module.exports = function (deployer, network, accounts) {
     let liquidator2;
     if( network == "rinkeby" || network == "development"){
       liquidator2 = await DeployIfNotExist(deployer, NewLiquidator, chick.address, '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735', '0xE592427A0AEce92De3Edee1F18E0157C05861564' );
+    }else if( network == "mainnet"){
+      // usdc, router
+      liquidator2 = await DeployIfNotExist(deployer, NewLiquidator, chick.address, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', '0xE592427A0AEce92De3Edee1F18E0157C05861564' );
     }
     
     /*
@@ -107,14 +110,33 @@ module.exports = function (deployer, network, accounts) {
 
     const vault = await GetDeployed(EthVault);
 
+    if( await liquidator2.hasRole( await liquidator2.VAULT_ROLE(), admin ) == false )
+    {
+      console.log("grant vault role:"+ await liquidator2.VAULT_ROLE() + ": " + admin );
+
+      await liquidator2.grantRole(await liquidator2.VAULT_ROLE(), admin );
+    }
+
+    /*
+    // for test
+    console.log("test liquidate:")
+    await liquidator2.liquidate( 0, admin, toUnit(0.0001), toUnit(0), 0, 0, { value: toUnit(0.0001), from: admin } );
+
+    vault.err123( "stop here ");
+    */
+
     if( await liquidator2.hasRole( await liquidator2.VAULT_ROLE(), vault.address) == false ){
-      console.log("grant vault role:"+ await liquidator2.VAULT_ROLE().toString() + ": " + vault.address.toString());
+      console.log("grant vault role:"+ await liquidator2.VAULT_ROLE() + ": " + vault.address.toString());
       await liquidator2.grantRole(await liquidator2.VAULT_ROLE(), vault.address);
     }
-    if( network == "rinkeby"){
-      console.log("grant vault role:"+ await liquidator2.VAULT_ROLE().toString() + ": " + new_admin);
 
-      await liquidator2.grantRole(await liquidator2.VAULT_ROLE(), new_admin );
+    // transfor admin role
+    console.log("transfer admin role: ");
+    if( await liquidator2.hasRole( await liquidator2.VAULT_ROLE(), admin )  )
+    {
+      console.log("revoke vault role:"+ await liquidator2.VAULT_ROLE() + ": " + admin );
+
+      await liquidator2.revokeRole(await liquidator2.VAULT_ROLE(), admin );
     }
 
     if( await liquidator2.hasRole( ADMIN_ROLE, new_admin ) == false ){
@@ -122,11 +144,13 @@ module.exports = function (deployer, network, accounts) {
 
       await liquidator2.grantRole( ADMIN_ROLE, new_admin );
     }
+
     if( await liquidator2.hasRole( DEFAULT_ADMIN_ROLE, owner) == false ){
       console.log("grant default admin role");
 
       await liquidator2.grantRole( DEFAULT_ADMIN_ROLE, owner );
     }
+
     if( await liquidator2.hasRole( DEFAULT_ADMIN_ROLE, admin ) ){
       console.log("remove default admin role from deployer");
 
