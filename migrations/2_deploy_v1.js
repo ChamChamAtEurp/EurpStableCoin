@@ -88,12 +88,15 @@ module.exports = function (deployer, network, accounts) {
     let owner;
     let new_admin;
     if( network == "rinkeby"){
-      owner = '0xdD6EE13Bdd6311E1c6223c3770d09101F4472EAa';
-      new_admin = '0xdD6EE13Bdd6311E1c6223c3770d09101F4472EAa';
+      owner = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
+      new_admin = '0x99530F82E3356255b1346dfbE8148BCFa0389985';
     }else if( network == "mainnet"){
       owner = '0xf83f3CAC7467B560Ac61c64aa7b0521EcDeDa2b8';
       new_admin = '0x5710b80b81f1713B677e9632b9f2BA67d762B2d8';
+    }else if( network == "development"){
+      owner = new_admin  = admin;
     }
+    
     console.log("admin: " + admin );
     console.log("owner: " + owner );
     console.log("new_admin: " + new_admin );

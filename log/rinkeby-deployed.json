@@ -1,47 +1,47 @@
 {
   "SafeMath": {
-    "address": "0x7CE2B6f666C375C0544a75bdC83858AB7ebd7bBE"
+    "address": "0x0CEec76DCc3D61fD7c59abdFcf1fdCaAE256bC7C"
   },
   "SafeDecimalMath": {
-    "address": "0x398631579b465D18197cd8Fb4CaDbA916324510B"
+    "address": "0x9533faedEfDbB6f2aC3EE48CD973b5b16b182042"
   },
   "Address": {
-    "address": "0x867d1A8eBEA8D0136e521CDbe6560a9E9a1e5e37"
+    "address": "0x598A9bD2252ae26326d50c59b36eb4017D9DdE4A"
   },
   "AddressBookLib": {
-    "address": "0x982A418696Cd8Cb932e472F6F4F55A8d161B3261"
+    "address": "0xb2Add8796beD41048354310b76f3Cc9cAD8fAc0c"
   },
   "AddressBook": {
-    "address": "0x18BE0De123A1307Af6751f4Fc1dADc30338f614c"
+    "address": "0xD3bf58aa072955A26E2a1be0c1cb6fBA40523b1A"
   },
   "Chick": {
-    "address": "0xCDbf03eeb2655ea4c2BD7b921aB95D3F9576284b"
+    "address": "0x82aa92102571936a9cd2D9bb08BeC0C3888035Db"
   },
   "GovernToken": {
-    "address": "0x309d0b3EEA74e725556DE3EC767451F70710F7Fe"
+    "address": "0xb25B3607057337b6fb2512CEd2C0575D104d62CC"
   },
   "VaultToken": {
-    "address": "0x0A86f9a4f5a778421c532b1F74B9CC9535ab9897"
+    "address": "0xcC9b77D2652762db4dF7e55f4a0141AB6a57A4e3"
   },
   "ChainlinkEurEthPriceFeed": {
-    "address": "0x4Ba79eD6aa4d2B10C8413FAA12B3403b70A99757"
+    "address": "0x6b00903E747d78051710477E5E33e8AeF48b2665"
   },
   "ChickPriceFeed": {
-    "address": "0xECd0A1Cf950aF13792B6B32dE897D5b98605f036"
+    "address": "0xddBd39a933a7F08613cF6EF8A3252393b13479A8"
   },
   "EthVault": {
-    "address": "0x56149F41e848599784F88313F23DeDa4D1b0BBB3"
+    "address": "0xeD18441Bef6dF8E83549D750D37840488fEf20D9"
   },
   "InterestManager": {
-    "address": "0xFD89ae25a9be1883BE5FcF6B71C38FcDA69b70eA"
+    "address": "0x3c7caf2cfb82a551c1100E959657d56DEa4c5B6e"
   },
   "GTokenRewardManager": {
-    "address": "0x839b42F82cbC31fF9c2d53F41b85F3f0FAD5A6bC"
+    "address": "0xA5479024A0E5b6A15930bCb467Ab6Bc388878080"
   },
   "UniswapLiquidationManager": {
-    "address": "0x90d865B8d390946647Fe953D6639376c0EF00dF2"
+    "address": "0xD002F1d509D0Ea4C8b44b9Ba82035158F3c2E14d"
   },
-  "UniswapLiquidatorV2": {
-    "address": "0x5c1F9CfE82ab397F0Cb7650f51B25baFbe9c6176"
+  "UniswapLiquidatorV3": {
+    "address": "0xdF3648092518AF5a7d71bAA4cA4eD46C50E72a2D"
   }
 }

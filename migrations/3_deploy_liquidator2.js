@@ -40,7 +40,7 @@ const LpReward = artifacts.require("LpRewardManager");
 const TestLpToken = artifacts.require("TestLpToken");
 
 const LiquidationMgr = artifacts.require("UniswapLiquidationManager");
-const LiquidatorV2 = artifacts.require("UniswapLiquidatorV2");
+const NewLiquidator = artifacts.require("UniswapLiquidatorV3");
 
 let BigNumber = require('bignumber.js/bignumber')
 
@@ -67,7 +67,10 @@ module.exports = function (deployer, network, accounts) {
     }else if( network == "mainnet"){
       owner = '0xf83f3CAC7467B560Ac61c64aa7b0521EcDeDa2b8';
       new_admin = '0x5710b80b81f1713B677e9632b9f2BA67d762B2d8';
+    }else if( network == "development"){
+      owner = new_admin  = admin;
     }
+
     console.log("admin: " + admin );
     console.log("owner: " + owner );
     console.log("new_admin: " + new_admin );
@@ -76,17 +79,20 @@ module.exports = function (deployer, network, accounts) {
     const addressBook = await GetDeployed(AddressBook);
     console.log("AddressBook: " + addressBook.address.toString() );
 
+    const chick = await GetDeployed(Chick);
+    console.log("Chick: " + chick.address.toString() );
+
     console.log("--------------- deploy liquidation2 -------------");
 
 
-    await deployer.link(SafeMath, [LiquidatorV2 ]);
-    await deployer.link(SafeDecimalMath, [LiquidatorV2 ]);
-    await deployer.link(Address, [LiquidatorV2]);
-    await deployer.link(AddressBookLib, [LiquidatorV2 ]);
+    await deployer.link(SafeMath, [NewLiquidator ]);
+    await deployer.link(SafeDecimalMath, [NewLiquidator ]);
+    await deployer.link(Address, [NewLiquidator]);
+    await deployer.link(AddressBookLib, [NewLiquidator ]);
 
     let liquidator2;
-    if( network == "rinkeby"){
-      liquidator2 = await DeployIfNotExist(deployer, LiquidatorV2, addressBook.address, '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735' );
+    if( network == "rinkeby" || network == "development"){
+      liquidator2 = await DeployIfNotExist(deployer, NewLiquidator, chick.address, '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735', '0xE592427A0AEce92De3Edee1F18E0157C05861564' );
     }
     
     /*
@@ -104,6 +110,11 @@ module.exports = function (deployer, network, accounts) {
     if( await liquidator2.hasRole( await liquidator2.VAULT_ROLE(), vault.address) == false ){
       console.log("grant vault role:"+ await liquidator2.VAULT_ROLE().toString() + ": " + vault.address.toString());
       await liquidator2.grantRole(await liquidator2.VAULT_ROLE(), vault.address);
+    }
+    if( network == "rinkeby"){
+      console.log("grant vault role:"+ await liquidator2.VAULT_ROLE().toString() + ": " + new_admin);
+
+      await liquidator2.grantRole(await liquidator2.VAULT_ROLE(), new_admin );
     }
 
     if( await liquidator2.hasRole( ADMIN_ROLE, new_admin ) == false ){
