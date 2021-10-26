@@ -43,5 +43,8 @@
   },
   "UniswapLiquidatorV3": {
     "address": "0xdF3648092518AF5a7d71bAA4cA4eD46C50E72a2D"
+  },
+  "TestVault": {
+    "address": "0xf2Cc7158220F9B42556a7a3f9556c9378a447f82"
   }
 }
